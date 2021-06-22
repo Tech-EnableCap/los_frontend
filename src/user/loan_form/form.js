@@ -6,10 +6,13 @@ import Personal from './personal_details';
 import {useForm} from '../../shared/hooks/form_hook';
 import {useHttp} from '../../shared/hooks/http_hook';
 /*import axios from 'axios'; */
+import Loader from '../../ui/loader.js';
+import Err from '../../ui/error.js';
 
 const Form=(props)=>{
 	let uid=null;
 	let pid=null;
+	let res=null;
 	const pId=JSON.parse(localStorage.getItem('pid'));
 	if(pId){
 		pid=pId.pid;
@@ -53,6 +56,7 @@ const Form=(props)=>{
 							'uid':uid
 						}
 					);
+					console.log(res);
 					setUser(res.msg.success.data);
 					setFormData({
 						...formState.inputs,
@@ -73,6 +77,7 @@ const Form=(props)=>{
 							valid:true
 						}
 					},true);
+					
 				}
 			}catch(err){
 
@@ -113,7 +118,7 @@ const Form=(props)=>{
 				uid=storedId.uid;
 			}
 			if(uid){
-				const res=await sendReq('http://localhost:5000/',
+				res=await sendReq('http://localhost:5000/',
 					'POST',
 					JSON.stringify({
 						data:{
@@ -134,7 +139,7 @@ const Form=(props)=>{
 				);
 				console.log(res)
 			}else{
-				const res=await sendReq('http://localhost:5000/',
+				res=await sendReq('http://localhost:5000/',
 					'POST',
 					JSON.stringify({
 						data:{
@@ -176,8 +181,8 @@ const Form=(props)=>{
 		}catch(err){
 			
 		}
-		setNext(true);
-		if(!pid){
+		if(!pid && res){
+			setNext(true);
 			localStorage.setItem(
 				'pid',
 				JSON.stringify({pid:1})
@@ -277,7 +282,7 @@ const Form=(props)=>{
 
 	return(
 		<React.Fragment>
-			{component}
+			<Err error="ppp" onClear={clearError}/>
 		</React.Fragment>
 	);
 };
