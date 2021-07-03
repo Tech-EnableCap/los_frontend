@@ -6,10 +6,7 @@ const Navlinks=(props)=>{
 	return(
 		<ul className="nav-links">
 			<li>
-				<NavLink to="/">Home</NavLink>
-			</li>
-			<li>
-				<NavLink to="/about">About</NavLink>
+				<NavLink to="/">Status</NavLink>
 			</li>
 			<li>
 				<NavLink to="/form">Form</NavLink>

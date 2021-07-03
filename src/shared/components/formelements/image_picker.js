@@ -1,6 +1,7 @@
 import React,{useRef,useState,useEffect} from 'react';
 import './image_picker.css';
 import './input.css';
+import Button from '../../../../src/ui/button';
 
 const ImagePicker=(props)=>{
 	const [file,setFile]=useState();
@@ -60,7 +61,7 @@ const ImagePicker=(props)=>{
 				<div className="image-upload__preview">
 					{element}
 				</div>
-				<button type="button" onClick={imageHandler}>Pick Image</button>
+				<Button type="button" onClick={imageHandler}>Pick Image</Button>
 			</div>
 			{!valid && <p>{props.errorText}</p>}
 		</div>

@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 import { CSSTransition } from "react-transition-group";
 
 import Backdrop from "./backdrop";
-import "./modal.css";
+import "./Modal.css";
 
 function ModelOverlay(props) {
   const content = (
-    <div className={`modal ${props.className}`} style={props.style}>
-      <header className={`modal__header ${props.HeaderClass}`}>
+    <div className={`Modal ${props.className}`} style={props.style}>
+      <header className={`Modal__header ${props.HeaderClass}`}>
         <h2>{props.header}</h2>
       </header>
       <form
@@ -16,11 +16,11 @@ function ModelOverlay(props) {
           props.onSubmit ? props.onSubmit : (event) => event.preventDefault()
         }
       >
-        <div className={`modal__content ${props.contentClass}`}>
+        <div className={`Modal__content ${props.contentClass}`}>
           {props.children}
         </div>
 
-        <footer className={`modal__footer ${props.footerClass}`}>
+        <footer className={`Modal__footer ${props.footerClass}`}>
           {props.footer}
         </footer>
       </form>
@@ -30,7 +30,6 @@ function ModelOverlay(props) {
 }
 
 function Modal(props) {
-  console.log(props);
   return (
     <React.Fragment>
       {props.show && <Backdrop onPress={props.onCancel} />}
@@ -38,7 +37,7 @@ function Modal(props) {
         in={props.show}
         mountOnEnter
         unmountOnExit
-        timeout={200}
+        timeout={10}
         classNames="modal"
       >
         <ModelOverlay {...props} />

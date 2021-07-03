@@ -52,10 +52,12 @@ const Input=(props)=>{
 	const element=props.element==='input' ? (<input id={props.id}
 	type={props.type} 
 	placeholder={props.placeholder}
+	disabled={props.disable}
 	onChange={changedHandler}
 	onBlur={blurHandler}
 	value={inputState.value} />) : (<textarea id={props.id} 
 	rows={props.rows || 3}
+	disabled={props.disable ? props.disable : false}
 	onChange={changedHandler}
 	onBlur={blurHandler}
 	value={inputState.value} />);

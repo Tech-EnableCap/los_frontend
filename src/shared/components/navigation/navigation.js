@@ -1,10 +1,11 @@
 import React,{useState} from 'react';
 import './navigation.css';
 import Header from './header';
-import {Link} from 'react-router-dom';
+//import {Link} from 'react-router-dom';
 import Navlinks from './navlink';
 import SideDrawer from './sideDrawer';
 import Backdrop from '../../../ui/backdrop';
+import logo from '../../../logo.svg';
 
 const Navigation=(props)=>{
 	const [drawerIsOpen,setDrawerIsOpen]=useState(false);
@@ -31,8 +32,11 @@ const Navigation=(props)=>{
 					<span/>
 					<span/>
 				</button>
+				
+				
 				<h1 className="main-navigation__title">
-					<Link to="/">LOS</Link>
+				<img src={logo} className="App-logo" alt="logo"/>
+					EnableCap
 				</h1>
 				<nav className="main-navigation__header-nav">
 					<Navlinks/>

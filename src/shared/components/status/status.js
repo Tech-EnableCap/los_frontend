@@ -3,11 +3,6 @@ import './status.css';
 
 const Status=(props)=>{
 	let element=null;
-	console.log("ddcvb");
-	console.log(props.status);
-	if(!props){
-		console.log("mngh");
-	}
 	if(props.status){
 		if(parseInt(props.status)===1){
 			element=(
@@ -73,7 +68,7 @@ const Status=(props)=>{
 				<div className="side" style={{background: "gray"}}><i class="fas fa-user"></i></div> >
 				<div className="side" style={{background: "gray"}}><i class="fas fa-coins"></i></div> >
 				<div className="side" style={{background: "gray"}}><i class="fas fa-landmark"></i></div> >
-				<div className="side" style={{background: "gray"}}><i class="fas fa-keyboard"></i></div>
+				<div className="side" style={{background: "gray"}}><i class="fas fa-keyboard"></i></div> >
 				<div className="side" style={{background: "gray"}}><i class="fas fa-id-card-alt"></i></div> 
 				</div> 
 			);

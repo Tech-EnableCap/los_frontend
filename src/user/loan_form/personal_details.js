@@ -9,11 +9,17 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import LoanDetails from './loan_details';
 import {useHttp} from '../../shared/hooks/http_hook';
+import Loader from '../../ui/loader.js';
+import Err from '../../ui/error.js';
+import Button from '../../ui/button';
+import UserStatus from '../../shared/components/status/user_status';
+import Status from '../../shared/components/status/status';
 
 
 const Personal=(props)=>{
 	let uid=null;
 	let pid=null;
+	let res=null;
 	const pId=JSON.parse(localStorage.getItem('pid'));
 	if(pId){
 		pid=pId.pid;
@@ -23,7 +29,8 @@ const Personal=(props)=>{
 	const [gender,setGender]=useState("Male");
 	const [marital,setMarital]=useState("Unmarried");
 	const [date,setDate]=useState(null);
-	const [valid,setValid]=useState(false)
+	const [valid,setValid]=useState(false);
+	const [err,setErr]=useState(false);
 	const nodeRef=useRef(null);
 	const [user,setUser]=useState(null);
 	const {loading,error,sendReq,clearError}=useHttp();
@@ -43,10 +50,6 @@ const Personal=(props)=>{
 		setBack(true);
 		setFront(false);
 	};
-	const frontHandle=()=>{
-		setFront(true);
-		setBack(false);
-	};
 	const handleDate=(date)=>{
 		setDate(date);
 		setValid(true);
@@ -58,6 +61,10 @@ const Personal=(props)=>{
 		setMarital(event.target.value);
 	};
 
+	const clean=()=>{
+		setErr(false);
+	}
+
 	useEffect(()=>{
 		const getUser=async ()=>{
 			try{
@@ -68,14 +75,27 @@ const Personal=(props)=>{
 						"GET",
 						null,
 						{
-							'uid':uid
+							'uid':uid,
+							"cors":"no-cors"
 						}
 					);
-					setUser(res.msg.success.data);
-					if(res.msg.success.data.gender){
-						setGender(res.msg.success.data.gender);
-					}if(res.msg.success.data.marital_status){
-						setMarital(res.msg.success.data.marital_status);
+					console.log(res);
+					if("success" in res.msg){
+						if("data" in res.msg.success){
+							console.log('ok');
+							setUser(res.msg.success.data);
+							if(res.msg.success.data.gender){
+								setGender(res.msg.success.data.gender);
+							}if(res.msg.success.data.marital_status){
+								setMarital(res.msg.success.data.marital_status);
+							}if(res.msg.success.data.dob){
+								setDate(new Date(res.msg.success.data.dob))
+							}
+						}else{
+							setErr("server error");
+						}
+					}else{
+						setErr("server error");
 					}
 				}
 			}catch(err){
@@ -100,35 +120,57 @@ const Personal=(props)=>{
 			if(storedId){
 				uid=storedId.uid;
 			}
-			if(uid){
-				const res=await sendReq('http://localhost:5000/form2',
+			if(uid && pid==1){
+				res=await sendReq('http://localhost:5000/form2',
 					'POST',
 					JSON.stringify({
 						data:{
 							gender:gender,
-							loan_app_dob:converted_date,
+							//loan_app_dob:converted_date,
+							dob:converted_date,
 							marital_status:marital
 						}
 					}),
 					{
 						'Content-Type':'application/json',
-						'uid':uid
+						'uid':uid,
+						"cors":"no-cors"
 					},
 				);
-				console.log(res)
+				console.log(res);
+				if("success" in res.msg){
+					if("message" in res.msg.success){
+						if(res.msg.success.message==="Data Updated Successfully"){
+							setFront(true);
+							if(parseInt(pid)==1){
+								localStorage.setItem(
+									'pid',
+									JSON.stringify({pid:2})
+								);
+							}
+						}else{
+							setErr("database error");
+						}
+					}else{
+						setErr("database error");
+					}
+				}else if('date_err' in res.msg){
+						setErr(res.msg.date_err);
+				}else if('error' in res.msg){
+						setErr(res.msg.error);
+				}
+			}else if(pid>=2){
+				setFront(true);
 			}
 		}catch(err){
 
 		}
-		setFront(true);
-		if(parseInt(pid)==1){
-			localStorage.setItem(
-				'pid',
-				JSON.stringify({pid:2})
-			);
-		}
 		
 	}
+
+	const reloadHandle=()=>{
+		window.location.reload();
+	};
 
 	//if(date){
 		//let dd=String(date.getDate()).padStart(2,'0');
@@ -144,16 +186,13 @@ const Personal=(props)=>{
 		element=<LoanDetails go="update"/>
 	}else if(back){
 		element=<Form go="update"/>
+	}else if(loading){
+		element=<Loader asOverlay />
 	}else if(props.go && parseInt(pid)>=2){
-		console.log(pid)
-		console.log("here");
-		if(user && user.loan_app_dob){
-			console.log("no here");
-			let dt=null;
-			if(user.loan_app_dob){
-				dt=new Date(user.loan_app_dob);
-			}
+		if(user && user.dob){
 			element=(
+				<React.Fragment>
+				<Status status={pid}/>
 				<form className="form" onSubmit={nextHandle}>
 			
 				<h1><center>Personal Details</center></h1>
@@ -161,9 +200,10 @@ const Personal=(props)=>{
 
 				<div className="form-control">
 				<label>DOB</label>
-					<DatePicker className="form-control"  selected={dt ? dt : null}
+					<DatePicker className="form-control"  selected={date}
 					placeholderText="Click here to select dob"
 					onChange={handleDate}
+					disabled={true}
 					dateFormat="dd/MM/yyyy"
 					showYearDropdown
 					nodeRef={nodeRef}
@@ -186,15 +226,19 @@ const Personal=(props)=>{
 
 		
 
-			<button onClick={backHandle}>Back</button>
-			<button type="submit">Next</button>
+			<Button onClick={backHandle}>Back</Button>
+			<Button type="submit">Next</Button>
 
-			</form> 
+			</form>
+			</React.Fragment>
 			);
+		}else{
+			element=<UserStatus err={true} reload={reloadHandle}/>;
 		}
 		}else{
-			console.log("in this part");
 			element=(
+				<React.Fragment>
+				<Status status={pid}/>
 				<form className="form" onSubmit={nextHandle}>
 			
 				<h1><center>Personal Details</center></h1>
@@ -227,16 +271,20 @@ const Personal=(props)=>{
 
 		
 
-			<button onClick={backHandle}>Back</button>
-			<button type="submit" disabled={!valid}>Next</button>
+			<Button onClick={backHandle}>Back</Button>
+			<Button type="submit" disabled={!valid}>Next</Button>
 
 			</form> 
+			</React.Fragment>
 		);
 		}	
 	
 
 	return(
 		<div>
+			{loading && <Loader asOverlay />}
+			<Err error={error} onClear={clearError}/>
+			<Err error={err} onClear={clean}/>
 			{element}
 		</div>
 	);

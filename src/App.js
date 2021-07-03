@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router,Route,Switch,} from 'react-router-dom';
+import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
 import Navigation from './shared/components/navigation/navigation';
 import Form from './user/loan_form/form';
 import Personal from './user/loan_form/personal_details';
@@ -7,7 +7,9 @@ import LoanDetails from './user/loan_form/loan_details';
 import Residence from './user/loan_form/residence';
 import WorkDetails from './user/loan_form/work_details';
 import DocUpload from './user/loan_form/doc';
-import Status from './shared/components/status/status';
+import UserStatus from './shared/components/status/user_status';
+import Footer from './ui/footer';
+import './App.css';
 
 function App() {
 	let pid=null;
@@ -34,13 +36,23 @@ function App() {
 		element=<Form/>
 	}
   return (
+  	<div className="App">
     <Router>
+    
       <Navigation/>
-      <Status status={pid}/>
-      <Route path="/form" exact>
+      	<Switch>
+       <Route path="/form" exact>
+
         {element}
-      </Route>
+        <Footer/>
+       </Route>
+        <Route path="/" exact>
+       	  <UserStatus pid={pid} err={false}/>
+          <Footer/>
+       </Route>
+       </Switch>
     </Router>
+    </div>
   );
 }
 

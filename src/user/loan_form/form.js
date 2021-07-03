@@ -1,24 +1,36 @@
 import React,{useState,useEffect} from 'react';
 import './form.css';
 import Input from '../../shared/components/formelements/input';
-import {VALIDATOR_REQUIRE,VALIDATOR_EMAIL,VALIDATOR_PHONE} from '../../shared/util/validator';
+import {VALIDATOR_REQUIRE,VALIDATOR_EMAIL,VALIDATOR_PHONE,VALIDATOR_NUMBER} from '../../shared/util/validator';
 import Personal from './personal_details';
 import {useForm} from '../../shared/hooks/form_hook';
 import {useHttp} from '../../shared/hooks/http_hook';
 /*import axios from 'axios'; */
 import Loader from '../../ui/loader.js';
 import Err from '../../ui/error.js';
+import Button from '../../ui/button';
+import UserStatus from '../../shared/components/status/user_status';
+import Status from '../../shared/components/status/status';
 
 const Form=(props)=>{
 	let uid=null;
 	let pid=null;
 	let res=null;
+	let otp_part=null;
+	let otp_button=null;
 	const pId=JSON.parse(localStorage.getItem('pid'));
 	if(pId){
 		pid=pId.pid;
 	}
+	const storedId=JSON.parse(localStorage.getItem('id'));
+	if(storedId){
+		uid=storedId.uid;
+	}
 	const {loading,error,sendReq,clearError}=useHttp();
 	const [user,setUser]=useState(null);
+	const [err,setErr]=useState(false);
+	const [otpValid,setOtpValid]=useState(false);
+	const [comeOtp,setComeOtp]=useState(false);
 	const [formState,formInputHandler,setFormData]=useForm(
 		{
 			first_name:{
@@ -40,6 +52,19 @@ const Form=(props)=>{
 		},false
 	);
 
+	const [otp_form,otp_handler,setOtp_form]=useForm(
+		{
+			otp:{
+				value:'',
+				isValid:false
+			}
+		},false
+	)
+
+	const clean=()=>{
+		setErr(false);
+	}
+
 
 	const [next,setNext]=useState(false);
 
@@ -49,35 +74,43 @@ const Form=(props)=>{
 				const storedId=JSON.parse(localStorage.getItem('id'));
 				if(storedId){
 					uid=storedId.uid;
-					const res=await sendReq("http://localhost:5000/getUserform1",
+					res=await sendReq("http://localhost:5000/getUserform1",
 						"GET",
 						null,
 						{
-							'uid':uid
+							'uid':uid,
+							"cors":"no-cors"
 						}
 					);
 					console.log(res);
-					setUser(res.msg.success.data);
-					setFormData({
-						...formState.inputs,
-						first_name:{
-							value:res.msg.success.data.loan_app_name.first_name,
-							valid:true
-						},
-						last_name:{
-							value:res.msg.success.data.loan_app_name.last_name,
-							valid:true
-						},
-						email:{
-							value:res.msg.success.data.loan_app_mail,
-							valid:true
-						},
-						phone:{
-							value:res.msg.success.data.Mobile,
-							valid:true
+					if("success" in res.msg){
+						if("data" in res.msg.success){
+							setUser(res.msg.success.data);
+							setFormData({
+								...formState.inputs,
+								first_name:{
+									value:res.msg.success.data.name.first_name,
+									valid:true
+								},
+								last_name:{
+									value:res.msg.success.data.name.last_name,
+									valid:true
+								},
+								email:{
+									value:res.msg.success.data.email,
+									valid:true
+								},
+								phone:{
+									value:res.msg.success.data.Mobile,
+									valid:true
+								}
+							},true);
+						}else{
+							setErr("server error");
 						}
-					},true);
-					
+					}else{
+						setErr("server error");
+					}
 				}
 			}catch(err){
 
@@ -110,14 +143,20 @@ const Form=(props)=>{
 		e.preventDefault();
 	}*/
 
+	const comeOtpHandle=()=>{
+		setComeOtp(true);
+	}
+
+	const handleOtp=()=>{
+		setOtpValid(true);
+		alert("otp validated, press next and continue !!");
+		setComeOtp(false);
+	}
+
 	const nextHandle=async (event)=>{
 		event.preventDefault();
 		try{
-			const storedId=JSON.parse(localStorage.getItem('id'));
-			if(storedId){
-				uid=storedId.uid;
-			}
-			if(uid){
+			/*if(uid){
 				res=await sendReq('http://localhost:5000/',
 					'POST',
 					JSON.stringify({
@@ -134,16 +173,24 @@ const Form=(props)=>{
 					}),
 					{
 						'Content-Type':'application/json',
-						'uid':uid
+						'uid':uid,
+						"cors":"no-cors"
 					},
 				);
 				console.log(res)
-			}else{
+			}else*/ 
+			if(!uid && otpValid){
 				res=await sendReq('http://localhost:5000/',
 					'POST',
 					JSON.stringify({
 						data:{
-							loan_app_name:{
+							/*loan_app_name:{
+								prefix:"",
+								first_name:formState.inputs.first_name.value,
+								last_name:formState.inputs.last_name.value,
+								suffix:""
+							},*/
+							name:{
 								prefix:"",
 								first_name:formState.inputs.first_name.value,
 								last_name:formState.inputs.last_name.value,
@@ -155,19 +202,29 @@ const Form=(props)=>{
 								last_name:formState.inputs.last_name.value,
 								suffix:""
 							},
-							loan_app_mail:formState.inputs.email.value,
+							app_Name:{
+								prefix:"",
+								first_name:formState.inputs.first_name.value,
+								last_name:formState.inputs.last_name.value,
+								suffix:""
+							},
+							//loan_app_mail:formState.inputs.email.value,
+							email:formState.inputs.email.value,
 							app_mail:formState.inputs.email.value,
 							Mobile:formState.inputs.phone.value,
+							Applicant_Phone:formState.inputs.phone.value
 						}
 					}),
 					{
-						'Content-Type':'application/json'
+						'Content-Type':'application/json',
+						"cors":"no-cors"
 					},
 				);
 				console.log(res);
-				if(res.msg.success && res.msg.success1){
+				if(!pid && res.msg.success && res.msg.success1 && res.msg.success2){
 					let id=res.msg.success.data.ID;
 					let did=res.msg.success1.data.ID;
+					let lid=res.msg.success2.data.ID;
 					localStorage.setItem(
 						'id',
 						JSON.stringify({uid:id})
@@ -176,27 +233,71 @@ const Form=(props)=>{
 						'did',
 						JSON.stringify({did:did})
 					);
+					localStorage.setItem(
+						'lid',
+						JSON.stringify({lid:lid})
+					);
+					localStorage.setItem(
+						'pid',
+						JSON.stringify({pid:1})
+					);
+					setNext(true);
 				}
+				else if(!res.msg.success && res.msg.error){
+					setErr("server error");
+				}
+
+			}else if(pid){
+				setNext(true);
+			}else{
+				alert("you must validate otp");
 			}
 		}catch(err){
-			
-		}
-		if(!pid && res){
-			setNext(true);
-			localStorage.setItem(
-				'pid',
-				JSON.stringify({pid:1})
-			);
+			console.log(err);	
 		}
 		
+	};
+
+
+
+	if(!uid && formState.inputs.phone.isValid){
+		otp_button=(
+			<Button type="button" onClick={comeOtpHandle}>Send otp</Button>
+		);
+	}else{
+		otp_button=null;
+	}
+
+	if(comeOtp){
+		otp_part=(
+			<React.Fragment>
+			<Input element="input" type="text" label="otp"
+			id="otp" 
+			validators={[VALIDATOR_REQUIRE(),VALIDATOR_NUMBER()]}
+			placeholder="enter otp" 
+			errorText="Please input otp"
+			onInput={otp_handler} />
+			<Button type="button" onClick={handleOtp} disabled={!otp_form.isValid}>Validate otp</Button>
+			</React.Fragment>
+		);
+	}else{
+		otp_part=null;
+	}
+
+	const reloadHandle=()=>{
+		window.location.reload();
 	};
 
 	let component=null;
 	if(next){
 		component=<Personal go="update"/>;
+	}else if(loading){
+		component=<Loader asOverlay />
 	}else if(props.go && parseInt(pid)>=1){
 		if(user){
 		component=(
+			<React.Fragment>
+			<Status status={pid}/>
 			<form className="form" onSubmit={nextHandle}>
 				<h1><center>Authentication</center></h1>
 				<hr/>
@@ -205,8 +306,9 @@ const Form=(props)=>{
 				validators={[VALIDATOR_REQUIRE()]}
 				placeholder="Firstname" 
 				errorText="Please enter your first name"
+				disable={true}
 				onInput={formInputHandler}
-				initvalue={user.loan_app_name.first_name}
+				initvalue={user.name.first_name}
 				initvalid={true} />
 
 				<Input element="input" type="text" label="Lastname"
@@ -214,8 +316,9 @@ const Form=(props)=>{
 				validators={[VALIDATOR_REQUIRE()]}
 				placeholder="Lastname"
 				errorText="Please enter your last name"
+				disable={true}
 				onInput={formInputHandler}
-				initvalue={user.loan_app_name.last_name}
+				initvalue={user.name.last_name}
 				initvalid={true} />
 
 				<Input element="input" type="email" label="Email" 
@@ -223,8 +326,9 @@ const Form=(props)=>{
 				id="email"
 				placeholder="Email"
 				errorText="Invalid email"
+				disable={true}
 				onInput={formInputHandler}
-				initvalue={user.loan_app_mail}
+				initvalue={user.email}
 				initvalid={true} />
 
 				<Input element="input" type="phone" label="Phone" 
@@ -232,17 +336,23 @@ const Form=(props)=>{
 				id="phone"
 				placeholder="Mobile number"
 				errorText="Invalid mobile number"
+				disable={true}
 				onInput={formInputHandler}
 				initvalue={user.Mobile}
 				initvalid={true} /> 
 
-			<button type="submit" disabled={!formState.isValid}>Next</button> 
+			<Button type="submit" disabled={!formState.isValid}>Next</Button> 
 
 			</form>
+			</React.Fragment>
 		);
+	}else{
+			component=<UserStatus err={true} reload={reloadHandle}/>;
 	}
 	}else{
 		component=(
+			<React.Fragment>
+			<Status status={pid}/>
 			<form className="form" onSubmit={nextHandle}>
 				<h1><center>Authentication</center></h1>
 				<hr/>
@@ -251,38 +361,57 @@ const Form=(props)=>{
 				validators={[VALIDATOR_REQUIRE()]}
 				placeholder="Firstname" 
 				errorText="Please enter your first name"
-				onInput={formInputHandler} />
+				onInput={formInputHandler}
+				initvalue={formState.inputs.first_name.value}
+				initvalid={formState.isValid} />
 
 				<Input element="input" type="text" label="Lastname"
 				id="last_name" 
 				validators={[VALIDATOR_REQUIRE()]}
 				placeholder="Lastname"
 				errorText="Please enter your last name"
-				onInput={formInputHandler} />
+				onInput={formInputHandler}
+				initvalue={formState.inputs.last_name.value}
+				initvalid={formState.isValid} />
 
 				<Input element="input" type="email" label="Email" 
 				validators={[VALIDATOR_REQUIRE(),VALIDATOR_EMAIL()]}
 				id="email"
 				placeholder="Email"
 				errorText="Invalid email"
-				onInput={formInputHandler} />
+				onInput={formInputHandler}
+				initvalue={formState.inputs.email.value}
+				initvalid={formState.isValid} />
 
 				<Input element="input" type="phone" label="Phone" 
 				validators={[VALIDATOR_REQUIRE(),VALIDATOR_PHONE()]}
 				id="phone"
 				placeholder="Mobile number"
 				errorText="Invalid mobile number"
-				onInput={formInputHandler} /> 
+				onInput={formInputHandler}
+				initvalue={formState.inputs.phone.value}
+				initvalid={formState.isValid} />
 
-			<button type="submit" disabled={!formState.isValid}>Next</button> 
+				{otp_button}
 
-			</form>);
+				{otp_part}
+
+
+			<Button type="submit" disabled={!formState.isValid || !otpValid}>Next</Button> 
+
+			</form>
+			</React.Fragment>
+
+		);
 	}
 
 
 	return(
 		<React.Fragment>
-			<Err error="ppp" onClear={clearError}/>
+			{loading && <Loader asOverlay />}
+			<Err error={error} onClear={clearError}/>
+			<Err error={err} onClear={clean}/>
+			{component}
 		</React.Fragment>
 	);
 };
