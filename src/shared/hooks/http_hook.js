@@ -26,7 +26,7 @@ export const useHttp=()=>{
 			setLoading(false);
 			return responseData;
 		}catch(err){
-			setError(err.message)
+			setError("Server Error : "+err.message)
 			setLoading(false);
 			throw err;
 		}

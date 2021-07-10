@@ -13,7 +13,7 @@ const userStatus=(props)=>{
 	if(pId){
 		pid=pId.pid;
 	}
-	if(pid){
+	if(pid && !props.err){
 		for (let i=0;i<st_list.length;i++){
 			if(i>pid-1){
 				break;

@@ -82,7 +82,7 @@ const ImagePicker=(props)=>{
 					{element}
 				</div>
 				<div style={{flexDirection:"row"}}>
-				<Button type="button" onClick={imageHandler}>Select file</Button>
+				{!props.view && <Button type="button" onClick={imageHandler}>Select file</Button>}
 			
 				</div>
 			</div>

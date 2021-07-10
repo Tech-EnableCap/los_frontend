@@ -9,11 +9,12 @@ import {useHttp} from '../../shared/hooks/http_hook';
 import Loader from '../../ui/loader.js';
 import Err from '../../ui/error.js';
 import Button from '../../ui/button';
-import UserStatus from '../../shared/components/status/user_status';
+//import UserStatus from '../../shared/components/status/user_status';
 import '../../shared/components/status/status.css';
 
 const Coapp=(props)=>{
 	let res=null;
+	let component=null;
 	const {loading,error,sendReq,clearError}=useHttp();
 	const [err,setErr]=useState(false);
 	const [details,getDetails]=useState(null);
@@ -92,13 +93,12 @@ const Coapp=(props)=>{
 			}
 			
 		}catch(err){
-			console.log(err);	
+			console.log("Server Error "+err);
 		}
 			
 	};
 
 
-	let component=null;
 	if(loading){
 		component=<Loader asOverlay />
 	}else{

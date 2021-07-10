@@ -19,6 +19,8 @@ const DocUpload=(props)=>{
 	let list1=[];
 	let list2=[];
 	let aa=null;
+	let ele1=[]
+	let ele2=[]
 	const pId=JSON.parse(localStorage.getItem('pid'));
 	if(pId){
 		pid=pId.pid;
@@ -334,6 +336,10 @@ const DocUpload=(props)=>{
 
 	const addPayslipHandle=()=>{
 		setPaysl(paysl+1);
+		if(paysl>14){
+			alert("max 10 images you can upload for this section");
+			return;
+		}
 		setMod([...mod,<Imageblock id={paysl} inpHandle={inputHandler} show={true}/>]);
 
 	}
@@ -341,6 +347,10 @@ const DocUpload=(props)=>{
 
 	const addStatementHandle=()=>{
 		setStatem(statem+1);
+		if(statem>24){
+			alert("max 10 images you can upload for this section");
+			return;
+		}
 		setDom([...dom,<Imageblock id={statem} inpHandle={inputHandler} show={true}/>]);
 	}
 
@@ -354,6 +364,19 @@ const DocUpload=(props)=>{
 		component=<Loader asOverlay />
 	}else if(parseInt(pid)>=6){
 		if(user){
+			for (let i=2;i<11;i++){
+				if(user["data"]["doc"+i]!==""){
+					console.log(i);
+					ele1.push(<div><ImagePicker view={true} center id={`image${i+4}`} image={`https://creator.zoho.in${user["data"]["doc"+i]}`} onInput={inputHandler}/></div>)
+				}
+			}
+			for (let i=12;i<21;i++){
+				if(user["data"]["doc"+i]!==""){
+					console.log(i);
+					ele2.push(<div><ImagePicker view={true} center id={`image${i+4}`} image={`https://creator.zoho.in${user["data"]["doc"+i]}`} onInput={inputHandler}/></div>)
+				}
+			}
+	
 			component=(
 				<React.Fragment>
 				<Status status={pid}/>
@@ -362,45 +385,48 @@ const DocUpload=(props)=>{
 				<h1><center>Documents upload</center></h1>
 				<hr/>
 				<div className="form-control">
-					<p><strong>Please upload passport pic</strong></p>
-					<ImagePicker center id="image1" image={formState.inputs.image1.value} onInput={inputHandler}/>
+					<p><strong>Your passport pic</strong></p>
+					<ImagePicker center id="image1" view={true} image={formState.inputs.image1.value} onInput={inputHandler}/>
 				</div>
 				<div className="form-control">
-					<p><strong>Please select PAN card</strong></p>
-					<ImagePicker center id="image2" image={`https://creator.zoho.in${user.data.pan_card_img}`} onInput={inputHandler}/>
+					<p><strong>Your PAN card</strong></p>
+					<ImagePicker center id="image2" view={true} image={`https://creator.zoho.in${user.data.pan_card_img}`} onInput={inputHandler}/>
 				</div>
 				<div className="form-control">
-					<p><strong>Please select front side of AADHAR card</strong></p>
-					<ImagePicker center id="image3" image={`https://creator.zoho.in${user.data.aadhar_frnt_img}`} onInput={inputHandler}/>
+					<p><strong>Front side of your AADHAR card</strong></p>
+					<ImagePicker center id="image3" view={true} image={`https://creator.zoho.in${user.data.aadhar_frnt_img}`} onInput={inputHandler}/>
 				</div>
 				<div className="form-control">
-					<p><strong>Please select back side of AADHAR card</strong></p>
-					<ImagePicker center id="image4" image={`https://creator.zoho.in${user.data.aadhar_back_img}`} onInput={inputHandler}/>
+					<p><strong>Back side of your AADHAR card</strong></p>
+					<ImagePicker center id="image4" view={true} image={`https://creator.zoho.in${user.data.aadhar_back_img}`} onInput={inputHandler}/>
 				</div>
 				{(props.payslip==="Salaried") ? (<><div className="form-control">
 					<p><strong>last 3 months payslip</strong></p>
-					<ImagePicker center id="image5" image={`https://creator.zoho.in${user.data.doc1}`} onInput={inputHandler}/>
-					<div><ImagePicker center id="image6" image={`https://creator.zoho.in${user.data.doc2}`} onInput={inputHandler}/></div>
-					<div><ImagePicker center id="image7" image={`https://creator.zoho.in${user.data.doc3}`} onInput={inputHandler}/></div>
+					<ImagePicker center id="image5" view={true} image={`https://creator.zoho.in${user.data.doc1}`} onInput={inputHandler}/>
+					{ele1.length>0 && ele1.map((e)=>{
+						return e
+					})}
 				</div>
 				<div className="form-control">
 					<p><strong>last 3 months salary a/c bank statement</strong></p>
-					<ImagePicker center id="image8" image={`https://creator.zoho.in${user.data.doc4}`} onInput={inputHandler}/>
-					<div><ImagePicker center id="image9" image={`https://creator.zoho.in${user.data.doc5}`} onInput={inputHandler}/></div>
-					<div><ImagePicker center id="image10" image={`https://creator.zoho.in${user.data.doc6}`} onInput={inputHandler}/></div>
+					<ImagePicker center id="image15" view={true} image={`https://creator.zoho.in${user.data.doc11}`} onInput={inputHandler}/>
+					{ele2.length>0 && ele2.map((e)=>{
+						return e
+					})}
 				</div></>) : (<><div className="form-control">
 					<p><strong>last 2 years ITR</strong></p>
-					<ImagePicker center id="image5" image={`https://creator.zoho.in${user.data.doc1}`} onInput={inputHandler}/>
-					<div><ImagePicker center id="image6" image={`https://creator.zoho.in${user.data.doc2}`} onInput={inputHandler}/></div>
+					<ImagePicker center id="image5" view={true} image={`https://creator.zoho.in${user.data.doc1}`} onInput={inputHandler}/>
+					{ele1.length>0 && ele1.map((e)=>{
+						return e
+					})}
 				</div><div className="form-control">
 					<p><strong>last 3 months bank statement</strong></p>
-					<ImagePicker center id="image8" image={`https://creator.zoho.in${user.data.doc4}`} onInput={inputHandler}/>
-					<div><ImagePicker center id="image9" image={`https://creator.zoho.in${user.data.doc5}`} onInput={inputHandler}/></div>
-					<div><ImagePicker center id="image10" image={`https://creator.zoho.in${user.data.doc6}`} onInput={inputHandler}/></div>
+					<ImagePicker center id="image15" view={true} image={`https://creator.zoho.in${user.data.doc11}`} onInput={inputHandler}/>
+					{ele2.length>0 && ele2.map((e)=>{
+						return e
+					})}
 				</div></>)}
-				
 				<Button onClick={backHandle}>Back</Button>
-				<Button type="submit" disabled={!formState.isValid}>Done</Button>
 				</form>
 				</React.Fragment>
 			);
@@ -454,7 +480,7 @@ const DocUpload=(props)=>{
 					<p onClick={addPayslipHandle}><i class="fa fa-plus" aria-hidden="true"></i></p>
 				</div><div className="form-control">
 					<p><strong>Please upload last 3 months bank statement</strong></p>
-					<ImagePicker center id="image8" onInput={inputHandler}/>
+					<ImagePicker center id="image15" onInput={inputHandler}/>
 					{dom.map((ele,idx)=>{
 						return <div key={idx}>{ele}</div>
 					})}
