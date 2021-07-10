@@ -183,12 +183,12 @@ const Personal=(props)=>{
 	let element=null;
 
 	if(front){
-		element=<LoanDetails go="update"/>
+		element=<LoanDetails/>
 	}else if(back){
-		element=<Form go="update"/>
+		element=<Form/>
 	}else if(loading){
 		element=<Loader asOverlay />
-	}else if(props.go && parseInt(pid)>=2){
+	}else if(parseInt(pid)>=2){
 		if(user && user.dob){
 			element=(
 				<React.Fragment>

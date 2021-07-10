@@ -8,29 +8,32 @@ import Residence from './user/loan_form/residence';
 import WorkDetails from './user/loan_form/work_details';
 import DocUpload from './user/loan_form/doc';
 import UserStatus from './shared/components/status/user_status';
+import Coapp from './user/loan_form/coapp';
 import Footer from './ui/footer';
 import './App.css';
 
 function App() {
 	let pid=null;
-	const pId=JSON.parse(localStorage.getItem('pid'));
+	let element=null;
+	let pId=JSON.parse(localStorage.getItem('pid'));
 	if(pId){
 		pid=pId.pid;
 	}
-	let element=null;
+	
 	if(pid){
+
 		if(parseInt(pid)==1){
-			element=<Form go="update"/>
+			element=<Form/>
 		}if(parseInt(pid)==2){
-			element=<Personal go="update"/>
+			element=<Personal/>
 		}if(parseInt(pid)==3){
-			element=<LoanDetails go="update"/>
+			element=<LoanDetails/>
 		}if(parseInt(pid)==4){
-			element=<Residence go="update"/>
+			element=<Residence/>
 		}if(parseInt(pid)==5){
-			element=<WorkDetails go="update"/>
+			element=<WorkDetails/>
 		}if(parseInt(pid)==6){
-			element=<DocUpload go="update"/>
+			element=<DocUpload/>
 		}
 	}else{
 		element=<Form/>
@@ -41,14 +44,19 @@ function App() {
     
       <Navigation/>
       	<Switch>
-       <Route path="/form" exact>
+        <Route path="/" exact>
+       	  <UserStatus pid={pid} err={false}/>
+          <Footer/>
+       </Route>
+        <Route path="/form" exact>
 
         {element}
         <Footer/>
        </Route>
-        <Route path="/" exact>
-       	  <UserStatus pid={pid} err={false}/>
-          <Footer/>
+       <Route path="/coapplicant" exact>
+
+        <Coapp/>
+        <Footer/>
        </Route>
        </Switch>
     </Router>

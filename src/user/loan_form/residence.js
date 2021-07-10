@@ -326,12 +326,12 @@ const Residence=(props)=>{
 
 	let component=null;
 	if(front){
-		component=<WorkDetails go="update"/>;
+		component=<WorkDetails/>;
 	}else if(back){
-		component=<LoanDetails go="update"/>;
+		component=<LoanDetails/>;
 	}else if(loading){
 		component=<Loader asOverlay />
-	}else if(props.go && parseInt(pid)>=4){
+	}else if(parseInt(pid)>=4){
 		if(user && user.per_res_addr){
 			component=(
 				<React.Fragment>

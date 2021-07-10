@@ -6,7 +6,7 @@ import Button from '../../../ui/button';
 
 const userStatus=(props)=>{
 	let element=null;
-	let st_list=["Authentication done","Personal information filled","Loan details filled","Residence details filled","Work details filled","Documents upoload done"];
+	let st_list=["Authentication done","Personal information filled","Loan details filled","Residence details filled","Work details filled","Documents upload done"];
 	let st_data=[];
 	let pid=null;
 	const pId=JSON.parse(localStorage.getItem('pid'));
@@ -34,7 +34,7 @@ const userStatus=(props)=>{
 			}
 		}
 		element=(<div className="form1">
-				<h1><center>Your status</center></h1>
+				<h1><center>Applicant's status</center></h1>
 				<hr/>
 				{st_data}
 				<Link to="/form" className="button">Go to Form</Link>

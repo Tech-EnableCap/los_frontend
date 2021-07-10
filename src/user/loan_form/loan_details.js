@@ -276,12 +276,12 @@ const LoanDetails=(props)=>{
 	let component=null;
 
 	if(front){
-		component=<Residence go="update"/>;
+		component=<Residence/>;
 	}else if(back){
-		component=<Personal go="update"/>;
+		component=<Personal/>;
 	}else if(loading){
 		component=<Loader asOverlay />
-	}else if(props.go && parseInt(pid)>=3){
+	}else if(parseInt(pid)>=3){
 		if(user && user.Institute_Type){
 			component=(
 				<React.Fragment>

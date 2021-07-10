@@ -9,7 +9,10 @@ const Navlinks=(props)=>{
 				<NavLink to="/">Status</NavLink>
 			</li>
 			<li>
-				<NavLink to="/form">Form</NavLink>
+				<NavLink to="/form">Applicant Form</NavLink>
+			</li>
+			<li>
+				<NavLink to="/coapplicant">Coapplicant</NavLink>
 			</li>
 		</ul>
 	);

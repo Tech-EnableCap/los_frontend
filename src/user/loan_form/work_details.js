@@ -270,13 +270,13 @@ const WorkDetails=(props)=>{
 
 	let component=null;
 	if(front){
-		component=<DocUpload go="update"/>
+		component=<DocUpload payslip={(salaried==="Salaried") ? "Salaried" : "Self"}/>
 	}
 	else if(back){
-		component=<Residence go="update"/>
+		component=<Residence/>
 	}else if(loading){
 		component=<Loader asOverlay />
-	}else if(props.go && parseInt(pid)>=5){
+	}else if(parseInt(pid)>=5){
 		if(user && user.pan){
 			component=(
 				<React.Fragment>

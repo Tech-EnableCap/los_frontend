@@ -22,6 +22,7 @@ const Form=(props)=>{
 	if(pId){
 		pid=pId.pid;
 	}
+	console.log(pid);
 	const storedId=JSON.parse(localStorage.getItem('id'));
 	if(storedId){
 		uid=storedId.uid;
@@ -290,10 +291,10 @@ const Form=(props)=>{
 
 	let component=null;
 	if(next){
-		component=<Personal go="update"/>;
+		component=<Personal/>;
 	}else if(loading){
 		component=<Loader asOverlay />
-	}else if(props.go && parseInt(pid)>=1){
+	}else if(parseInt(pid)>=1){
 		if(user){
 		component=(
 			<React.Fragment>
