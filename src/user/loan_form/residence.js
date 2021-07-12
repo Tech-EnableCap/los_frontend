@@ -90,7 +90,7 @@ const Residence=(props)=>{
 				const storedId=JSON.parse(localStorage.getItem('id'));
 				if(storedId){
 					uid=storedId.uid;
-					res=await sendReq("http://localhost:5000/getUserform1",
+					res=await sendReq("http://65.1.107.76:5000/getUserform1",
 						"GET",
 						null,
 						{
@@ -229,7 +229,7 @@ const Residence=(props)=>{
 				uid=storedId.uid;
 			}
 			if(uid && pid==3){
-				const res=await sendReq('http://localhost:5000/form2',
+				const res=await sendReq('http://65.1.107.76:5000/form2',
 					'POST',
 					JSON.stringify({
 						data:{

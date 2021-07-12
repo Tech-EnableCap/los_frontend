@@ -78,7 +78,7 @@ const LoanDetails=(props)=>{
 				const storedId=JSON.parse(localStorage.getItem('lid'));
 				if(storedId){
 					lid=storedId.lid;
-					res=await sendReq("http://localhost:5000/getUserform1",
+					res=await sendReq("http://65.1.107.76:5000/getUserform1",
 						"GET",
 						null,
 						{
@@ -183,7 +183,7 @@ const LoanDetails=(props)=>{
 				lid=storelId.lid;
 			}
 			if(uid && lid && pid==2){
-				res=await sendReq('http://localhost:5000/form2',
+				res=await sendReq('http://65.1.107.76:5000/form2',
 					'POST',
 					JSON.stringify({
 						data:{

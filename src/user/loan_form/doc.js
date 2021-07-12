@@ -142,7 +142,7 @@ const DocUpload=(props)=>{
 				const storedId=JSON.parse(localStorage.getItem('did'));
 				if(storedId){
 					uid=storedId.did;
-					res=await sendReq("http://localhost:5000/getUserdocs",
+					res=await sendReq("http://65.1.107.76:5000/getUserdocs",
 						"GET",
 						null,
 						{
@@ -296,7 +296,7 @@ const DocUpload=(props)=>{
 				formData.append("image8",formState.inputs.image8.value);
 				formData.append("image9",formState.inputs.image9.value);
 				formData.append("image10",formState.inputs.image10.value);*/
-				res=await sendReq('http://localhost:5000/form4',
+				res=await sendReq('http://65.1.107.76:5000/form4',
 					'POST',
 					formData,
 					{

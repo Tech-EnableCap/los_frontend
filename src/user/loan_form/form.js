@@ -76,7 +76,7 @@ const Form=(props)=>{
 				const storedId=JSON.parse(localStorage.getItem('id'));
 				if(storedId){
 					uid=storedId.uid;
-					res=await sendReq("http://localhost:5000/getUserform1",
+					res=await sendReq("http://65.1.107.76:5000/getUserform1",
 						"GET",
 						null,
 						{
@@ -186,7 +186,7 @@ const Form=(props)=>{
 				console.log(res)
 			}else*/ 
 			if(!uid && otpValid){
-				res=await sendReq('http://localhost:5000/',
+				res=await sendReq('http://65.1.107.76:5000/',
 					'POST',
 					JSON.stringify({
 						data:{

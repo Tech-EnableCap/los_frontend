@@ -61,14 +61,14 @@ const Coapp=(props)=>{
 	}
 
 	const getFormHandler=()=>{
-		window.location.href="http://localhost:4000/"+details[0].lid+"/form";
+		window.location.href="http://65.1.107.76:4000/"+details[0].lid+"/form";
 	}
 
 
 	const nextHandle=async (event)=>{
 		event.preventDefault();
 		try{
-			res=await sendReq('http://localhost:5000/getapplicant',
+			res=await sendReq('http://65.1.107.76:5000/getapplicant',
 				'POST',
 				JSON.stringify({
 					data:{
