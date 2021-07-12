@@ -415,6 +415,8 @@ const WorkDetails=(props)=>{
 					</React.Fragment>
 
 			);
+		}else{
+			component=<UserStatus err={true} reload={reloadHandle}/>;
 		}
 	}else{
 		component=(

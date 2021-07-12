@@ -2,6 +2,7 @@ import React,{useState,useEffect} from 'react';
 import './form.css';
 import Input from '../../shared/components/formelements/input';
 import {VALIDATOR_REQUIRE,VALIDATOR_EMAIL,VALIDATOR_PHONE,VALIDATOR_NUMBER} from '../../shared/util/validator';
+import SweetAlert from 'react-bootstrap-sweetalert';
 import Personal from './personal_details';
 import {useForm} from '../../shared/hooks/form_hook';
 import {useHttp} from '../../shared/hooks/http_hook';
@@ -148,6 +149,10 @@ const Form=(props)=>{
 		setComeOtp(true);
 	}
 
+	const closeBlock=()=>{
+		setComeOtp(false);
+	}
+
 	const handleOtp=()=>{
 		setOtpValid(true);
 		alert("otp validated, press next and continue !!");
@@ -271,15 +276,21 @@ const Form=(props)=>{
 
 	if(comeOtp){
 		otp_part=(
-			<React.Fragment>
-			<Input element="input" type="text" label="otp"
-			id="otp" 
-			validators={[VALIDATOR_REQUIRE(),VALIDATOR_NUMBER()]}
-			placeholder="enter otp" 
-			errorText="Please input otp"
-			onInput={otp_handler} />
-			<Button type="button" onClick={handleOtp} disabled={!otp_form.isValid}>Validate otp</Button>
-			</React.Fragment>
+			<SweetAlert
+		       show={comeOtp}
+		        style={{backgroundImage:"linear-gradient(rgb(255 252 252),transparent)"}}
+		         customButtons={
+		          <Button onClick={closeBlock}>Cancel</Button>
+		        }
+		      ><div><center><React.Fragment><Input element="input" type="text" label="OTP"
+							id="otp" 
+							validators={[VALIDATOR_REQUIRE(),VALIDATOR_NUMBER()]}
+							placeholder="enter otp" 
+							errorText="Please input otp"
+							onInput={otp_handler} />
+							<Button type="button" onClick={handleOtp} disabled={!otp_form.isValid}>Validate otp</Button>
+							</React.Fragment></center></div>
+		    </SweetAlert>	
 		);
 	}else{
 		otp_part=null;
