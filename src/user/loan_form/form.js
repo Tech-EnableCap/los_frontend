@@ -264,6 +264,27 @@ const Form=(props)=>{
 		
 	};
 
+	/*const verifyOTP=async ()=>{
+		try{
+			res=await sendReq(
+				'https://testapi.karza.in/v2/mobile/otp',
+				'POST',
+				JSON.stringify({
+					 mobile:formState.inputs.phone.value,
+  					 consent:"y"
+				}),
+				{
+					"Content-Type":"application/json",
+					"x-karza-key":"A6NW4c3qcpiwdd1nlxn7"
+				}
+
+			);
+			console.log(res);
+		}catch(err){
+			console.log(err);
+		}
+	}*/
+
 
 
 	if(!uid && formState.inputs.phone.isValid){

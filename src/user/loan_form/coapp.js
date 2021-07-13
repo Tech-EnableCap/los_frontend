@@ -93,7 +93,7 @@ const Coapp=(props)=>{
 			}
 			
 		}catch(err){
-			console.log("Server Error "+err);
+			setErr("Server Error "+err);
 		}
 			
 	};
@@ -124,7 +124,6 @@ const Coapp=(props)=>{
 					placeholder="Loan ID"
 					errorText="enter loan id"
 					onInput={formInputHandler}
-					initvalue={formState.inputs.lid.value}
 					initvalid={formState.isValid} />
 
 
@@ -142,7 +141,6 @@ const Coapp=(props)=>{
 					placeholder="Phone"
 					errorText="enter applicant's phone number"
 					onInput={formInputHandler1}
-					initvalue={formState1.inputs.phone.value}
 					initvalid={formState1.isValid} />
 
 
